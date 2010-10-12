@@ -8,7 +8,7 @@
 		
 		function __construct(&$parent){
 			parent::__construct($parent);
-			$this->_name = 'Unique Text Input';
+			$this->_name = __('Unique Text Input');
 			$this->_required = true;
 			
 			$this->set('required', 'yes');
@@ -33,7 +33,7 @@
 		function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 			$value = $data['value'];		
 			$label = Widget::Label($this->get('label'));
-			if($this->get('required') != 'yes') $label->appendChild(new XMLElement('i', 'Optional'));
+			if($this->get('required') != 'yes') $label->appendChild(new XMLElement('i', __('Optional')));
 			$label->appendChild(Widget::Input('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, (strlen($value) != 0 ? $value : NULL)));
 
 			if($flagWithError != NULL) $wrapper->appendChild(Widget::wrapFormElementWithError($label, $flagWithError));
@@ -93,22 +93,22 @@
 			$handle = Lang::createHandle($data);
 			
 			if($this->get('required') == 'yes' && strlen($data) == 0){
-				$message = "'". $this->get('label')."' is a required field.";
+				$message = __("'%s' is a required field.", array($this->get('label')));
 				return self::__MISSING_FIELDS__;
 			}	
 			
 			if(!$this->__applyValidationRules($data)){
-				$message = "'". $this->get('label')."' contains invalid data. Please check the contents.";
+				$message = __("'%s' contains invalid data. Please check the contents.", array($this->get('label')));
 				return self::__INVALID_FIELDS__;	
 			}
 			
 			if($this->get('auto_unique') != 'yes' && !$this->__isHandleUnique($handle, $entry_id)){
-				$message = 'Value must be unique.';
+				$message = __('Value must be unique.');
 				return self::__INVALID_FIELDS__;				
 			}
 			
 			if(!General::validateXML(General::sanitize($data), $errors, false, new XsltProcess)){
-				$message = "'". $this->get('label')."' contains invalid XML. The following error was returned: <code>" . $errors[0]['message'] . '</code>';
+				$message = __("'%s' contains invalid XML. The following error was returned: <code>%s</code>", array($this->get('label'), $errors[0]['message']));
 				return self::__INVALID_FIELDS__;
 			}
 			
@@ -223,13 +223,13 @@
 			$label = Widget::Label();
 			$input = Widget::Input('fields['.$this->get('sortorder').'][auto_unique]', 'yes', 'checkbox');
 			if($this->get('auto_unique') == 'yes') $input->setAttribute('checked', 'checked');
-			$label->setValue($input->generate() . ' Create unique handles automatically');
+			$label->setValue($input->generate() . ' ' . __('Create unique handles automatically'));
 			$div->appendChild($label);
 			
 			$this->appendRequiredCheckbox($div);
 			$wrapper->appendChild($div);
 			
-			$wrapper->appendChild(new XMLElement('p', 'When a handle clash is detected, rather than throw an error, a number is appended to form a unique value.', array('class' => 'help')));			
+			$wrapper->appendChild(new XMLElement('p', __('When a handle clash is detected, rather than throw an error, a number is appended to form a unique value.'), array('class' => 'help')));			
 					
 			$this->appendShowColumnCheckbox($wrapper);
 						
